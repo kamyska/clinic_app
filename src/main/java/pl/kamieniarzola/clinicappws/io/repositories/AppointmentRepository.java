@@ -11,7 +11,8 @@ import java.util.List;
 @Repository
 public interface AppointmentRepository extends PagingAndSortingRepository<AppointmentEntity,Long> {
 
-    AppointmentEntity findAppointmentById(String id);
+    AppointmentEntity findAppointmentByAppointmentId(String id);
     AppointmentEntity findAppointmentByUserAndDate(UserEntity userEntity, LocalDateTime date);
     List<AppointmentEntity> findAllByUser(UserEntity userEntity);
+    List<AppointmentEntity> findAllByAppointmentIdIsNotNull();
 }

@@ -13,16 +13,16 @@ public class AppointmentEntity {
     private String appointmentId;
     @Column(nullable = false)
     private LocalDateTime date;
-    @Column(nullable = false)
+    @Column
     private String description;
-    @Column(nullable = false)
+    @Column
     private Boolean booked;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     @JoinColumn(name="user")
     private UserEntity user;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     @JoinColumn(name = "patient")
     private PatientEntity patient;
 

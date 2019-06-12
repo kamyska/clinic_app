@@ -6,9 +6,11 @@ import java.util.List;
 
 public interface AppointmentService {
 
-    AppointmentDTO createAppointment(AppointmentDTO userDto) throws Exception;
+    AppointmentDTO createAppointment(AppointmentDTO appointmentDTO) throws Exception;
     AppointmentDTO getAppointment(String id) throws Exception;
     AppointmentDTO updateAppointment(String id, AppointmentDTO appointmentDTO) throws Exception;
     void deleteAppointment(String id) throws Exception;
-    List<AppointmentDTO> getAppointments(String userId);
+    List<AppointmentDTO> getUserAppointments(String userId);
+    List<AppointmentDTO> getAllAppointments();
+
 }

@@ -81,7 +81,7 @@ public class UserController {
                                                      @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
         List<AppointmentRest> appointmentRestList = new ArrayList<>();
-        List<AppointmentDTO> appointmentDTOList = appointmentService.getAppointments(login);
+        List<AppointmentDTO> appointmentDTOList = appointmentService.getUserAppointments(login);
 
         if (appointmentDTOList!=null && !appointmentDTOList.isEmpty()){
             Type listType = new TypeToken<List<AppointmentRest>>() {}.getType();

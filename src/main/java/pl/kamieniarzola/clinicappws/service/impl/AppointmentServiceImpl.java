@@ -1,5 +1,8 @@
 package pl.kamieniarzola.clinicappws.service.impl;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pl.kamieniarzola.clinicappws.io.entity.AppointmentEntity;
 import pl.kamieniarzola.clinicappws.io.entity.PatientEntity;
 import pl.kamieniarzola.clinicappws.io.entity.UserEntity;
@@ -10,9 +13,6 @@ import pl.kamieniarzola.clinicappws.shared.dto.AppointmentDTO;
 import pl.kamieniarzola.clinicappws.shared.dto.PatientDTO;
 import pl.kamieniarzola.clinicappws.shared.dto.UserDTO;
 import pl.kamieniarzola.clinicappws.shared.utils.RandomGenerator;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,11 +32,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDTO createAppointment(AppointmentDTO appointmentDTO) throws Exception {
-
+        if (appointmentDTO.getUser() != null) {
         UserDTO userDto = appointmentDTO.getUser();
         UserEntity userEntity = new ModelMapper().map(userDto, UserEntity.class);
         if (appointmentRepository.findAppointmentByUserAndDate(userEntity,appointmentDTO.getDate()) != null) {
             throw new Exception("appointment already exists!");
+        }
         }
 
         AppointmentEntity appointmentEntity = new ModelMapper().map(appointmentDTO, AppointmentEntity.class);
@@ -47,7 +48,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDTO getAppointment(String id) throws Exception {
-        AppointmentEntity appointmentEntity = appointmentRepository.findAppointmentById(id);
+        AppointmentEntity appointmentEntity = appointmentRepository.findAppointmentByAppointmentId(id);
         if (appointmentEntity == null) {
             throw new Exception("not found!");
         }
@@ -57,7 +58,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDTO updateAppointment(String id, AppointmentDTO appointmentDTO) throws Exception {
-        AppointmentEntity appointmentEntity = appointmentRepository.findAppointmentById(id);
+        AppointmentEntity appointmentEntity = appointmentRepository.findAppointmentByAppointmentId(id);
         if (appointmentEntity == null) {
             throw new Exception("not found!");
         }
@@ -76,7 +77,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public void deleteAppointment(String id) throws Exception {
 
-        AppointmentEntity appointmentEntity = appointmentRepository.findAppointmentById(id);
+        AppointmentEntity appointmentEntity = appointmentRepository.findAppointmentByAppointmentId(id);
         if (appointmentEntity == null) {
             throw new Exception("not found!");
         }
@@ -86,7 +87,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDTO> getAppointments(String login) {
+    public List<AppointmentDTO> getUserAppointments(String login) {
         List<AppointmentDTO> returnValue = new ArrayList<>();
         UserEntity userEntity = userRepository.findUserByLogin(login);
 
@@ -95,6 +96,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         List<AppointmentEntity> appointmentsList = appointmentRepository.findAllByUser(userEntity);
+        for (AppointmentEntity appointment : appointmentsList) {
+            returnValue.add(new ModelMapper().map(appointment, AppointmentDTO.class));
+        }
+
+        return returnValue;
+    }
+
+    @Override
+    public List<AppointmentDTO> getAllAppointments() {
+        List<AppointmentDTO> returnValue = new ArrayList<>();
+        List<AppointmentEntity> appointmentsList = appointmentRepository.findAllByAppointmentIdIsNotNull();
         for (AppointmentEntity appointment : appointmentsList) {
             returnValue.add(new ModelMapper().map(appointment, AppointmentDTO.class));
         }
