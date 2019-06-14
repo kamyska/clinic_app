@@ -1,8 +1,12 @@
 package pl.kamieniarzola.clinicappws.ui.model.response;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class PatientRest {
+public class PatientRest implements Serializable {
 
     private String id;
     private String firstName;
@@ -10,6 +14,7 @@ public class PatientRest {
     private String personalIdNumber;
     private String address;
     private String phone;
+    @JsonBackReference
     private List<AppointmentRest> appointments;
 
     public List<AppointmentRest> getAppointments() {

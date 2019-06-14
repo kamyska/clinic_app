@@ -8,7 +8,6 @@ public class AppointmentDTO {
     private String appointmentId;
     private LocalDateTime date;
     private String description;
-    private Boolean booked;
     private UserDTO user;
     private PatientDTO patient;
 
@@ -63,11 +62,5 @@ public class AppointmentDTO {
         this.description = description;
     }
 
-    public Boolean getBooked() {
-        return booked;
-    }
 
-    public void setBooked(Boolean booked) {
-        this.booked = booked;
-    }
 }

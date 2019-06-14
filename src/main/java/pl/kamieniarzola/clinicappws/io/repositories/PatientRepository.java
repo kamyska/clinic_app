@@ -7,9 +7,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PatientRepository extends PagingAndSortingRepository<PatientEntity,Long> {
 
-    PatientEntity findPatientById(String id);
+    PatientEntity findPatientByPatientId(String id);
     PatientEntity findPatientByPersonalIdNumber(String personalIdNum);
     PatientEntity findPatientByLastName(String lastName);
+
+
 
 
 

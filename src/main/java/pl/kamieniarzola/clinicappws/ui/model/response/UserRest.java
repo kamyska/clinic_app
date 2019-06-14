@@ -1,13 +1,18 @@
 package pl.kamieniarzola.clinicappws.ui.model.response;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class UserRest {
+public class UserRest implements Serializable {
 
     private String firstName;
     private String lastName;
     private String login;
     private String role;
+    @JsonBackReference
     private List<AppointmentRest> appointments;
 
     public String getFirstName() {

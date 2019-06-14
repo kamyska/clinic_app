@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 public class AppointmentRequestModel {
 
     private UserRequestModel user;
-    private PatientRequestModel patientRequestModel;
+    private PatientRequestModel patient;
     private LocalDateTime date;
     private String description;
-    private Boolean booked;
+
 
 
     public UserRequestModel getUser() {
@@ -19,12 +19,12 @@ public class AppointmentRequestModel {
         this.user = user;
     }
 
-    public PatientRequestModel getPatientRequestModel() {
-        return patientRequestModel;
+    public PatientRequestModel getPatient() {
+        return patient;
     }
 
-    public void setPatientRequestModel(PatientRequestModel patientRequestModel) {
-        this.patientRequestModel = patientRequestModel;
+    public void setPatient(PatientRequestModel patient) {
+        this.patient = patient;
     }
 
     public LocalDateTime getDate() {
@@ -43,11 +43,4 @@ public class AppointmentRequestModel {
         this.description = description;
     }
 
-    public Boolean getBooked() {
-        return booked;
-    }
-
-    public void setBooked(Boolean booked) {
-        this.booked = booked;
-    }
 }

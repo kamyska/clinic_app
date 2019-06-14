@@ -1,15 +1,20 @@
 package pl.kamieniarzola.clinicappws.ui.model.response;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class AppointmentRest {
+public class AppointmentRest implements Serializable {
 
     private String appointmentId;
+    @JsonManagedReference
     private UserRest user;
     private LocalDateTime date;
+  @JsonManagedReference
     private PatientRest patient;
     private String description;
-    private Boolean booked;
 
     public UserRest getUser() {
         return user;
@@ -43,14 +48,6 @@ public class AppointmentRest {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Boolean getBooked() {
-        return booked;
-    }
-
-    public void setBooked(Boolean booked) {
-        this.booked = booked;
     }
 
     public String getAppointmentId() {

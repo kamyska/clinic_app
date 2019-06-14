@@ -28,15 +28,7 @@ public class AppointmentController {
         return new ModelMapper().map(appointmentDTO, AppointmentRest.class);
     }
 
-    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public AppointmentRest createAppointment(@RequestBody AppointmentRequestModel appointment) throws Exception {
 
-        AppointmentDTO appointmentDTO = new ModelMapper().map(appointment, AppointmentDTO.class);
-        AppointmentDTO createdAppointment = appointmentService.createAppointment(appointmentDTO);
-
-        return new ModelMapper().map(createdAppointment, AppointmentRest.class);
-    }
 
     @PutMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE})

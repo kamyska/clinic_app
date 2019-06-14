@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = new ModelMapper().map(userDto, UserEntity.class);
         userEntity.setEncodedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-        userEntity.setLogin(randomGenerator.generateRandomId(8));
+        userEntity.setLogin(randomGenerator.generateRandomId(4));
         UserEntity savedUser = userRepository.save(userEntity);
         return new ModelMapper().map(savedUser,UserDTO.class);
     }
@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
         }
         userEntity.setFirstName(userDto.getFirstName());
         userEntity.setLastName(userDto.getLastName());
+        userEntity.setRole(userDto.getRole());
         UserEntity updatedUser = userRepository.save(userEntity);
 
         return new ModelMapper().map(updatedUser,UserDTO.class);

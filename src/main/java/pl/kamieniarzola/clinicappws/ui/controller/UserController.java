@@ -4,6 +4,7 @@ import pl.kamieniarzola.clinicappws.service.AppointmentService;
 import pl.kamieniarzola.clinicappws.service.UserService;
 import pl.kamieniarzola.clinicappws.shared.dto.AppointmentDTO;
 import pl.kamieniarzola.clinicappws.shared.dto.UserDTO;
+import pl.kamieniarzola.clinicappws.ui.model.request.AppointmentRequestModel;
 import pl.kamieniarzola.clinicappws.ui.model.request.UserRequestModel;
 import pl.kamieniarzola.clinicappws.ui.model.response.AppointmentRest;
 import pl.kamieniarzola.clinicappws.ui.model.response.UserRest;
@@ -90,5 +91,32 @@ public class UserController {
 
         return appointmentRestList;
 
+    }
+
+//    @GetMapping(path = "/{login}/appointments/history",produces = {MediaType.APPLICATION_JSON_VALUE})
+//    public List<AppointmentRest> getHistoryOfUserAppointments(@PathVariable String login,@RequestParam(value = "page", defaultValue = "0") int page,
+//                                                     @RequestParam(value = "limit", defaultValue = "25") int limit) {
+//
+//        List<AppointmentRest> appointmentRestList = new ArrayList<>();
+//        List<AppointmentDTO> appointmentDTOList = appointmentService.getHistoryOfUserAppointments(login);
+//
+//        if (appointmentDTOList!=null && !appointmentDTOList.isEmpty()){
+//            Type listType = new TypeToken<List<AppointmentRest>>() {}.getType();
+//            appointmentRestList= new ModelMapper().map(appointmentDTOList, listType);
+//        }
+//
+//        return appointmentRestList;
+//
+//    }
+
+    @PostMapping(path="/{login}/appointments", produces = {MediaType.APPLICATION_JSON_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public AppointmentRest createUserAppointment(@PathVariable String login, @RequestBody AppointmentRequestModel appointment) throws Exception {
+        UserDTO userDto = userService.getUser(login);
+
+        AppointmentDTO appointmentDTO = new ModelMapper().map(appointment, AppointmentDTO.class);
+        AppointmentDTO createdAppointment = appointmentService.createAppointment(appointmentDTO,userDto);
+
+        return new ModelMapper().map(createdAppointment, AppointmentRest.class);
     }
 }

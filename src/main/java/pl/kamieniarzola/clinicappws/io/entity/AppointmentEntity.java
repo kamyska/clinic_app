@@ -15,15 +15,16 @@ public class AppointmentEntity {
     private LocalDateTime date;
     @Column
     private String description;
-    @Column
-    private Boolean booked;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+
+    @ManyToOne
     @JoinColumn(name="user")
+
     private UserEntity user;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "patient")
+
     private PatientEntity patient;
 
     public long getId() {
@@ -59,13 +60,6 @@ public class AppointmentEntity {
         this.description = description;
     }
 
-    public Boolean getBooked() {
-        return booked;
-    }
-
-    public void setBooked(Boolean booked) {
-        this.booked = booked;
-    }
 
     public UserEntity getUser() {
         return user;
@@ -74,6 +68,7 @@ public class AppointmentEntity {
     public void setUser(UserEntity user) {
         this.user = user;
     }
+
 
     public PatientEntity getPatient() {
         return patient;

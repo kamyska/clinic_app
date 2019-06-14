@@ -8,13 +8,13 @@ public class PatientEntity {
     @Id
     @GeneratedValue
     private long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String patientId;
     @Column(nullable = false)
     private String firstName;
     @Column(nullable = false)
     private String lastName;
-    @Column(nullable = false, length = 11)
+    @Column(nullable = false, length = 11, unique = true)
     private String personalIdNumber;
     @Column(length = 100)
     private String address;
@@ -23,6 +23,7 @@ public class PatientEntity {
 
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+
     private List<AppointmentEntity> appointments;
 
     public long getId() {
@@ -80,6 +81,7 @@ public class PatientEntity {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
 
     public List<AppointmentEntity> getAppointments() {
         return appointments;

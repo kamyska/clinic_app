@@ -1,5 +1,6 @@
 package pl.kamieniarzola.clinicappws.service.impl;
 
+import org.springframework.stereotype.Service;
 import pl.kamieniarzola.clinicappws.io.entity.PatientEntity;
 import pl.kamieniarzola.clinicappws.io.repositories.PatientRepository;
 import pl.kamieniarzola.clinicappws.service.PatientService;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class PatientServiceImpl implements PatientService {
 
     @Autowired
@@ -25,7 +27,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientDTO createPatient(PatientDTO patientDTO) throws Exception {
-        if (patientRepository.findPatientById(patientDTO.getPatientId())!=null){
+        if (patientRepository.findPatientByPatientId(patientDTO.getPatientId())!=null){
             throw new Exception("Patient already exists!");
         }
         PatientEntity patientEntity = new ModelMapper().map(patientDTO, PatientEntity.class);
@@ -37,7 +39,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientDTO getPatientById(String id) {
-        PatientEntity patientEntity = patientRepository.findPatientById(id);
+        PatientEntity patientEntity = patientRepository.findPatientByPatientId(id);
         if (patientEntity == null){
             throw new UsernameNotFoundException(id);
         }
@@ -66,7 +68,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientDTO updatePatient(String id, PatientDTO patientDTO) {
-        PatientEntity patientEntity = patientRepository.findPatientById(id);
+        PatientEntity patientEntity = patientRepository.findPatientByPatientId(id);
         if (patientEntity == null){
             throw new UsernameNotFoundException(id);
         }
@@ -81,7 +83,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public void deletePatient(String id) {
-        PatientEntity patientEntity = patientRepository.findPatientById(id);
+        PatientEntity patientEntity = patientRepository.findPatientByPatientId(id);
         if (patientEntity == null){
             throw new UsernameNotFoundException(id);
         }
