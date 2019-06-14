@@ -6,6 +6,6 @@ Doctors can add dates of possible appointments and also add visit's description 
 REST application using Java, Maven, Spring, MySQL. For now backend only.
 
 TODO next : 
-- Appointment and Patient controllers
+- Exception handling
 - security and logging
 
