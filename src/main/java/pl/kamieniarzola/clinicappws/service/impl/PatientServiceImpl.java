@@ -1,6 +1,7 @@
 package pl.kamieniarzola.clinicappws.service.impl;
 
 import org.springframework.stereotype.Service;
+import pl.kamieniarzola.clinicappws.exceptions.PatientServiceException;
 import pl.kamieniarzola.clinicappws.io.entity.PatientEntity;
 import pl.kamieniarzola.clinicappws.io.repositories.PatientRepository;
 import pl.kamieniarzola.clinicappws.service.PatientService;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import pl.kamieniarzola.clinicappws.ui.model.response.ErrorMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,13 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public PatientDTO createPatient(PatientDTO patientDTO) throws Exception {
         if (patientRepository.findPatientByPatientId(patientDTO.getPatientId())!=null){
-            throw new Exception("Patient already exists!");
+            throw new PatientServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.getErrorMessage());
+        }
+
+        if (patientDTO.getFirstName() == null || patientDTO.getLastName() == null
+                || patientDTO.getAddress() == null || patientDTO.getPhone() == null || patientDTO.getPersonalIdNumber() == null){
+            throw new PatientServiceException(ErrorMessages.MISSING_REQUIRED_FIELDS.getErrorMessage());
+
         }
         PatientEntity patientEntity = new ModelMapper().map(patientDTO, PatientEntity.class);
 
@@ -41,7 +49,7 @@ public class PatientServiceImpl implements PatientService {
     public PatientDTO getPatientById(String id) {
         PatientEntity patientEntity = patientRepository.findPatientByPatientId(id);
         if (patientEntity == null){
-            throw new UsernameNotFoundException(id);
+            throw new PatientServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage() + id);
         }
 
         return new ModelMapper().map(patientEntity,PatientDTO.class);
@@ -51,7 +59,7 @@ public class PatientServiceImpl implements PatientService {
     public PatientDTO getPatientByPersonalIdNum(String personalIdNum) {
         PatientEntity patientEntity = patientRepository.findPatientByPersonalIdNumber(personalIdNum);
         if (patientEntity == null){
-            throw new UsernameNotFoundException(personalIdNum);
+            throw new PatientServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage() + personalIdNum);
         }
 
         return new ModelMapper().map(patientEntity,PatientDTO.class);
@@ -70,7 +78,7 @@ public class PatientServiceImpl implements PatientService {
     public PatientDTO updatePatient(String id, PatientDTO patientDTO) {
         PatientEntity patientEntity = patientRepository.findPatientByPatientId(id);
         if (patientEntity == null){
-            throw new UsernameNotFoundException(id);
+            throw new PatientServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage() + id);
         }
         patientEntity.setFirstName(patientDTO.getFirstName());
         patientEntity.setLastName(patientDTO.getLastName());
@@ -85,7 +93,7 @@ public class PatientServiceImpl implements PatientService {
     public void deletePatient(String id) {
         PatientEntity patientEntity = patientRepository.findPatientByPatientId(id);
         if (patientEntity == null){
-            throw new UsernameNotFoundException(id);
+            throw new PatientServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage() + id);
         }
         patientRepository.delete(patientEntity);
 
@@ -97,7 +105,9 @@ public class PatientServiceImpl implements PatientService {
         Pageable pageableRequest = PageRequest.of(page, limit);
         Page<PatientEntity> pageOfPatients = patientRepository.findAll(pageableRequest);
         List<PatientEntity> patientsOnPage = pageOfPatients.getContent();
-
+        if (patientsOnPage.isEmpty()){
+            throw new PatientServiceException(ErrorMessages.NO_RECORDS.getErrorMessage());
+        }
         for (PatientEntity entity : patientsOnPage) {
             PatientDTO patientDTO = new ModelMapper().map(entity, PatientDTO.class);
             listOfPatients.add(patientDTO);

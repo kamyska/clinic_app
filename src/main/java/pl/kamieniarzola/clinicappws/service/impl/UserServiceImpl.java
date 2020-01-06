@@ -1,5 +1,6 @@
 package pl.kamieniarzola.clinicappws.service.impl;
 
+import pl.kamieniarzola.clinicappws.exceptions.UserServiceException;
 import pl.kamieniarzola.clinicappws.io.entity.UserEntity;
 import pl.kamieniarzola.clinicappws.io.repositories.UserRepository;
 import pl.kamieniarzola.clinicappws.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.kamieniarzola.clinicappws.ui.model.response.ErrorMessages;
 
 
 import java.util.ArrayList;
@@ -36,9 +38,13 @@ public class UserServiceImpl implements UserService {
     public UserDTO createUser(UserDTO userDto) throws Exception {
 
         if (userRepository.findUserByLogin(userDto.getLogin())!=null){
-            throw new Exception("user already exists!");
+            throw new UserServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.getErrorMessage());
         }
+        if (userDto.getFirstName() == null || userDto.getLastName() == null || userDto.getRole() == null
+        || userDto.getPassword() == null){
+            throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELDS.getErrorMessage());
 
+        }
         UserEntity userEntity = new ModelMapper().map(userDto, UserEntity.class);
         userEntity.setEncodedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userEntity.setLogin(randomGenerator.generateRandomId(4));
@@ -50,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUser(String login) {
         UserEntity userEntity = userRepository.findUserByLogin(login);
         if (userEntity == null){
-            throw new UsernameNotFoundException(login);
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage() + login);
         }
 
         return new ModelMapper().map(userEntity,UserDTO.class);
@@ -60,7 +66,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(String login, UserDTO userDto) {
         UserEntity userEntity = userRepository.findUserByLogin(login);
         if (userEntity == null){
-            throw new UsernameNotFoundException(login);
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage() + login);
         }
         userEntity.setFirstName(userDto.getFirstName());
         userEntity.setLastName(userDto.getLastName());
@@ -74,9 +80,10 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String login) {
         UserEntity userEntity = userRepository.findUserByLogin(login);
         if (userEntity == null){
-            throw new UsernameNotFoundException(login);
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage() + login);
         }
-        userRepository.delete(userEntity);
+            userRepository.delete(userEntity);
+
     }
 
     @Override
@@ -85,7 +92,9 @@ public class UserServiceImpl implements UserService {
         Pageable pageableRequest = PageRequest.of(page, limit);
         Page<UserEntity> pageOfUsers = userRepository.findAll(pageableRequest);
         List<UserEntity> usersOnPage = pageOfUsers.getContent();
-
+        if (usersOnPage.isEmpty()){
+            throw new UserServiceException(ErrorMessages.NO_RECORDS.getErrorMessage());
+        }
         for (UserEntity entity : usersOnPage) {
             UserDTO userDto = new ModelMapper().map(entity, UserDTO.class);
             listOfUsers.add(userDto);
@@ -97,8 +106,8 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findUserByLogin(login);
 
-        if (userEntity == null) {
-            throw new UsernameNotFoundException(login);
+        if (userEntity == null){
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage() + login);
         }
         return new User(userEntity.getLogin(), userEntity.getEncodedPassword(), new ArrayList<>());
     }

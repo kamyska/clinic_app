@@ -1,8 +1,8 @@
 package pl.kamieniarzola.clinicappws.exceptions;
 
-public class ServiceException extends RuntimeException{
+public class UserServiceException extends RuntimeException{
 
-    public ServiceException(String message) {
+    public UserServiceException(String message) {
         super(message);
     }
 }
